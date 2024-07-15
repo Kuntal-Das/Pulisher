@@ -9,7 +9,11 @@ namespace Pulisher.UI.ViewModel
         {
             _deploymentConfiguration = selectedDeploymentConfiguration;
             ProjectName = _deploymentConfiguration.ProjectName;
-            Deployments = new ObservableCollection<DeploymentViewModel>();
+            Deployments = new ObservableCollection<DeploymentViewModel>()
+            {
+                new DeploymentViewModel(new DeploymentConfiguration(ProjectName, ProjectName, new Dictionary<string, string>()))
+            };
+            SelecteddeploymentIndx = 0;
         }
 
         private DeploymentConfiguration _deploymentConfiguration;
@@ -25,17 +29,37 @@ namespace Pulisher.UI.ViewModel
             }
         }
         public ObservableCollection<DeploymentViewModel> Deployments { get; set; }
-        private DeploymentViewModel _selectedDeploymentView;
+        private int _selectedDeploymentIndx;
+
+        public int SelecteddeploymentIndx
+        {
+            get { return _selectedDeploymentIndx; }
+            set
+            {
+                _selectedDeploymentIndx = value;
+                RaisePropertyChanged(nameof(SelectedDeploymentView));
+            }
+        }
+
+        //private DeploymentViewModel _selectedDeploymentView;
 
         public DeploymentViewModel SelectedDeploymentView
         {
-            get => _selectedDeploymentView;
-            set
+            get
             {
-                _selectedDeploymentView = value;
-                RaisePropertyChanged();
+                if (SelecteddeploymentIndx < 0)
+                    return new DeploymentViewModel(new DeploymentConfiguration(ProjectName, ProjectName, new Dictionary<string, string>()));
+                return Deployments[SelecteddeploymentIndx];
             }
         }
+        //{
+        //    get => _selectedDeploymentView;
+        //    set
+        //    {
+        //        _selectedDeploymentView = value;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
     }
 }
