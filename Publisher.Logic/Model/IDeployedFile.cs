@@ -1,4 +1,5 @@
 ﻿
+
 namespace Publisher.Logic.Model
 {
     public interface IDeployedFile
@@ -9,5 +10,8 @@ namespace Publisher.Logic.Model
         bool IsRollingBack { get; }
         DateTime LastWriteTimeUtc { get; }
         string RelativePath { get; }
+
+        Task DownloadAsync(string toolLocalDirPath);
+        bool IsUpdateNeeded(string toolLocalDirPath);
     }
 }

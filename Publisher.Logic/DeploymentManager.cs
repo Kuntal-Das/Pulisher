@@ -1,11 +1,16 @@
-﻿using Publisher.Logic.Model;
+﻿using Publisher.Logic.Helpers;
+using Publisher.Logic.Model;
 using System.Diagnostics;
+using System.Text;
 
 namespace Publisher.Logic
 {
     internal class DeploymentManager : IDeploymentManager
     {
+        internal DeploymentManager() { }
+
         private Helpers.Publisher _p;
+        private Updater _u;
 
         public Configuration Configuration { get; set; }
 
@@ -25,7 +30,7 @@ namespace Publisher.Logic
                 {
                     _p.Publish(Configuration.PublishPathBySite[site], releaseDirPath, needToRollback, removeOldFile, version);
                 }
-                catch (Exception ex)
+                catch
                 {
                     progress?.Report($"Deployment to {site} was unsuccessful");
                 }
@@ -59,19 +64,93 @@ namespace Publisher.Logic
         }
 
 
-        public Task<List<IDeployedFile>> CheckForUpdateAsync()
+        public async Task<List<IDeployedFile>> CheckForUpdateAsync()
         {
-            throw new NotImplementedException();
+            _u ??= new Updater();
+
+            foreach (var site in Configuration.PublishPathBySite.Keys)
+            {
+                try
+                {
+                    var deployedFiles = await _u.GetFilesfromJsonAsync(Configuration.PublishPathBySite[site]);
+
+                    if (deployedFiles.Count > 0)
+                    {
+                        var filteredDeployedFiles = deployedFiles.FindAll(d => d.IsUpdateNeeded(Configuration.LocalToolDirFullPath));
+                        return filteredDeployedFiles;
+                    }
+                }
+                catch (Exception ex) { }
+            }
+            return Enumerable.Empty<IDeployedFile>().ToList();
+        }
+
+        public async Task<List<IDeployedFile>> UpdateAsync(List<IDeployedFile> updateFiles, bool canFlush = false, IProgress<string> statusProgress = null, IProgress<int> percentageProgress = null)
+        {
+            _u ??= new Updater();
+            if (updateFiles.Any(u => u.FlushOld))
+            {
+                if (canFlush)
+                {
+                    _u.Flush(Configuration.LocalToolDirFullPath);
+                }
+                else
+                {
+                    return updateFiles;
+                }
+            }
+            var unableToUpdateFiles = new List<IDeployedFile>();
+            for (var d = 0; d < updateFiles.Count; d++)
+            {
+                if (updateFiles[d].IsUpdateNeeded(Configuration.LocalToolDirFullPath))
+                {
+                    try
+                    {
+                        statusProgress?.Report($"Downloading: " + Path.Combine(updateFiles[d].RelativePath, updateFiles[d].FileName));
+                        await updateFiles[d].DownloadAsync(Configuration.LocalToolDirFullPath);
+                        percentageProgress.Report((d * 100) / updateFiles.Count);
+                    }
+                    catch
+                    {
+                        await updateFiles[d].DownloadAsync(Path.Combine(Configuration.LocalToolDirFullPath, Configuration.tempDownloadPath));
+                        unableToUpdateFiles.Add(updateFiles[d]);
+                    }
+                }
+            }
+            return unableToUpdateFiles;
         }
 
         public void CloseCurrentAndLaunchUpdated(List<IDeployedFile> notUpdatedFiles)
         {
-            throw new NotImplementedException();
-        }
+            var sb = new StringBuilder($"TASKKILL /F /IM {Configuration.MainExeName}");
 
-        public Task<List<IDeployedFile>> UpdateAsync(List<IDeployedFile> deployedFiles, bool canFlush = false, IProgress<string> statusProgress = null, IProgress<int> percentageProgress = null)
-        {
-            throw new NotImplementedException();
+            var localDirInfo = new DirectoryInfo(Configuration.LocalToolDirFullPath);
+            sb.Append($" $cd {localDirInfo.FullName}");
+
+            if (notUpdatedFiles.Any(f => f.FlushOld))
+            {
+                var files = localDirInfo.GetFiles();
+                foreach (var f in files)
+                    sb.Append($" & del /F /Q {f.Name}");
+
+                var dirs = localDirInfo.GetDirectories();
+                foreach (var d in dirs)
+                {
+                    if (d.Name == Configuration.tempDownloadPath) continue;
+                    sb.Append($" $ RMDIR /S /Q {d.Name}");
+                }
+            }
+            sb.Append($" & XCOPY \"{Path.Combine(localDirInfo.FullName, Configuration.tempDownloadPath)}\" \"{localDirInfo.FullName}\" /H /I /C /K /E /R /Y");
+            sb.Append($" & RMDIR /S /Q {Configuration.tempDownloadPath}");
+            sb.Append($" & {Configuration.MainExeName}");
+            sb.Append(" & EXIT");
+
+            var pInfo = new ProcessStartInfo("cmd.exe", "/C " + sb.ToString())
+            {
+                WindowStyle = ProcessWindowStyle.Hidden
+            };
+
+            Process.Start(pInfo);
         }
     }
 }

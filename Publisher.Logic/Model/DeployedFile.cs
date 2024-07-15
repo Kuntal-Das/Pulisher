@@ -21,7 +21,7 @@
         public bool IsRollingBack { get; }
         public bool FlushOld { get; internal set; }
 
-        internal async Task DownloadAsync(string toolLocalDirPath)
+        public async Task DownloadAsync(string toolLocalDirPath)
         {
             var localDir = new DirectoryInfo(RelativePath == "." ? toolLocalDirPath : Path.Combine(toolLocalDirPath, RelativePath));
             if (!localDir.Exists) localDir.Create();
@@ -42,7 +42,8 @@
             }
             File.SetLastWriteTimeUtc(localFilePath, LastWriteTimeUtc);
         }
-        internal bool IsUpdateNeeded(string toolLocalDirPath)
+
+        public bool IsUpdateNeeded(string toolLocalDirPath)
         {
             if (FlushOld) return true;
             var localDir = new DirectoryInfo(RelativePath == "." ? toolLocalDirPath : Path.Combine(toolLocalDirPath, RelativePath));

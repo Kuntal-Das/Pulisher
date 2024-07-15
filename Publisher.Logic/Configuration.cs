@@ -4,7 +4,7 @@ namespace Publisher.Logic
 {
     public class Configuration : IEquatable<Configuration?>
     {
-        private const string tempDownloadPath = "Update";
+        public const string tempDownloadPath = "Update";
 
         private Dictionary<string, string> _publishPathBySite;
         private IDeploymentManager _deploymentMamanger;
