@@ -17,7 +17,7 @@ namespace Pulisher.UI
         {
             if (this.DataContext is MainViewModel mvm)
             {
-                await mvm.LoadDataAsync();
+                await mvm.RefreshDataAsync();
             }
         }
     }

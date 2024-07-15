@@ -1,5 +1,7 @@
 ﻿using Publisher.Logic;
+using Pulisher.UI.Command;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Pulisher.UI.ViewModel
 {
@@ -55,14 +57,67 @@ namespace Pulisher.UI.ViewModel
                 return _projectVmByProjectName[SelectedProject];
             }
         }
-        public async Task LoadDataAsync()
+        public async Task RefreshDataAsync()
         {
             await Task.Delay(300);
-            Projects.Add("ISAAC");
-            Projects.Add("ISAAC_bot");
-            Projects.Add("QC Auditor");
+        }
+        private ICommand _refreshCommand;
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                if (_refreshCommand is null)
+                {
+                    _refreshCommand = new RelayCommandAsync(ExecuteRefreshAsync, (obj) => true);
+                }
+                return _refreshCommand;
+            }
+        }
+        private async Task ExecuteRefreshAsync(object obj)
+        {
+            await RefreshDataAsync();
+        }
 
-            SelectedProject = Projects[0];
+        private string _projectToAdd;
+
+        public string ProjectToAdd
+        {
+            get => _projectToAdd;
+            set
+            {
+                _projectToAdd = value;
+                RaisePropertyChanged();
+            }
+        }
+
+
+        private ICommand _addCommand;
+
+        public ICommand AddCommand
+        {
+            get
+            {
+                if (_addCommand is null)
+                {
+                    _addCommand = new RelayCommand(ExecuteAdd, CanExecuteAdd);
+                }
+                return _addCommand;
+            }
+        }
+
+        private bool CanExecuteAdd(object? obj)
+        {
+            if (!string.IsNullOrWhiteSpace(ProjectToAdd) && ProjectToAdd.Length > 3 && !Projects.Contains(ProjectToAdd.Trim()))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void ExecuteAdd(object obj)
+        {
+            Projects.Add(ProjectToAdd.Trim());
+            ProjectToAdd = string.Empty;
         }
     }
 }

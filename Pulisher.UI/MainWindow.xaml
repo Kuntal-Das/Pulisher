@@ -12,7 +12,7 @@
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
-    <Grid Margin="5">
+    <Grid Margin="5,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="10"/>
@@ -26,26 +26,39 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="15"/>
         </Grid.RowDefinitions>
         <TextBlock>Projects</TextBlock>
-        <ListView
+        <ScrollViewer
             Grid.Row="2"
-            Grid.RowSpan="2"
-            SelectedValue="{Binding SelectedProject, Mode=TwoWay}"
-            ItemsSource="{Binding Projects}">
-        </ListView>
+            VerticalScrollBarVisibility="Auto">
+            <ListView
+                SelectedValue="{Binding SelectedProject, Mode=TwoWay}"
+                ItemsSource="{Binding Projects}">
+            </ListView>
+        </ScrollViewer>
         <Button 
             Grid.Row="4"
-            >Add</Button>
+            Command="{Binding RefreshCommand}"
+            >Refresh</Button>
+
+        <TextBox 
+            Grid.Row="6"
+            Text="{Binding ProjectToAdd, UpdateSourceTrigger=PropertyChanged}"/>
         <Button 
-           Grid.Row="6"
-           >Refresh</Button>
+            Grid.Row="8"
+            Command="{Binding AddCommand}"
+            CommandParameter="{ Binding ElementName=tb_add_project, Path=Text}"
+            >Add</Button>
+
 
         <Grid 
             Grid.Row="0"
             Grid.Column="2"
-            Grid.RowSpan="7">
+            Grid.RowSpan="9">
             <Grid.Resources>
                 <DataTemplate DataType="{x:Type vm:ProjectViewModel}">
                     <view:ProjectView/>
@@ -53,6 +66,6 @@
             </Grid.Resources>
             <ContentControl Content="{Binding SelectedProjectVm}"/>
         </Grid>
-        
+
     </Grid>
 </Window>
