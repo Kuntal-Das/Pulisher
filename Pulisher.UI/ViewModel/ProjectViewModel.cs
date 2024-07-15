@@ -1,5 +1,7 @@
 ﻿using Publisher.Logic;
+using Pulisher.UI.Command;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Pulisher.UI.ViewModel
 {
@@ -9,10 +11,7 @@ namespace Pulisher.UI.ViewModel
         {
             _deploymentConfiguration = selectedDeploymentConfiguration;
             ProjectName = _deploymentConfiguration.ProjectName;
-            Deployments = new ObservableCollection<DeploymentViewModel>()
-            {
-                new DeploymentViewModel(new DeploymentConfiguration(ProjectName, ProjectName, new Dictionary<string, string>()))
-            };
+            Deployments = new ObservableCollection<DeploymentViewModel>();
             SelectedDeploymentIndx = 0;
         }
 
@@ -45,10 +44,34 @@ namespace Pulisher.UI.ViewModel
         {
             get
             {
-                if (SelectedDeploymentIndx < 0)
+                if (SelectedDeploymentIndx <= Deployments.Count)
                     return new DeploymentViewModel(new DeploymentConfiguration(ProjectName, ProjectName, new Dictionary<string, string>()));
                 return Deployments[SelectedDeploymentIndx];
             }
+        }
+
+        private ICommand _addDeployment;
+
+        public ICommand AddDeployment
+        {
+            get
+            {
+                if (_addDeployment is null)
+                {
+                    _addDeployment = new RelayCommand(ExecuteAddDeployment, CanExecuteAddDeployment);
+                }
+                return _addDeployment;
+            }
+        }
+
+        private void ExecuteAddDeployment(object? obj)
+        {
+
+        }
+
+        private bool CanExecuteAddDeployment(object? arg)
+        {
+            throw new NotImplementedException();
         }
     }
 }
