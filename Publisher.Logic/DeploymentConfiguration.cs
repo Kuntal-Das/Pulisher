@@ -2,7 +2,7 @@
 
 namespace Publisher.Logic
 {
-    public class Configuration : IEquatable<Configuration?>
+    public class DeploymentConfiguration : IEquatable<DeploymentConfiguration?>
     {
         public const string tempDownloadPath = "Update";
 
@@ -10,14 +10,13 @@ namespace Publisher.Logic
         private IDeploymentManager _deploymentMamanger;
 
         [JsonConstructor]
-        public Configuration(string projectName, string mainExeName, Dictionary<string, string> publishPathBySite, string localToolDirFullPath = ".")
+        public DeploymentConfiguration(string projectName, string mainExeName, Dictionary<string, string> publishPathBySite, string localToolDirFullPath = ".")
         {
             ProjectName = projectName;
             MainExeName = mainExeName;
             PublishPathBySite = publishPathBySite;
             LocalToolDirFullPath = localToolDirFullPath;
         }
-
 
         [JsonIgnore]
         public IDeploymentManager DeploymentManager
@@ -56,19 +55,23 @@ namespace Publisher.Logic
                 }
             }
         }
+        /// <summary>
+        /// Required at the time of update<br/>
+        /// Not Required at the time of publishing 
+        /// </summary>
         public string LocalToolDirFullPath { get; set; }
 
-        internal static Configuration? GetInstance(string json)
+        internal static DeploymentConfiguration? GetInstance(string json)
         {
-            return JsonConvert.DeserializeObject<Configuration>(json);
+            return JsonConvert.DeserializeObject<DeploymentConfiguration>(json);
         }
 
         public override bool Equals(object? obj)
         {
-            return Equals(obj as Configuration);
+            return Equals(obj as DeploymentConfiguration);
         }
 
-        public bool Equals(Configuration? other)
+        public bool Equals(DeploymentConfiguration? other)
         {
             return other is not null &&
                    EqualityComparer<Dictionary<string, string>>.Default.Equals(_publishPathBySite, other._publishPathBySite) &&
@@ -95,12 +98,12 @@ namespace Publisher.Logic
             return ToJson();
         }
 
-        public static bool operator ==(Configuration? left, Configuration? right)
+        public static bool operator ==(DeploymentConfiguration? left, DeploymentConfiguration? right)
         {
-            return EqualityComparer<Configuration>.Default.Equals(left, right);
+            return EqualityComparer<DeploymentConfiguration>.Default.Equals(left, right);
         }
 
-        public static bool operator !=(Configuration? left, Configuration? right)
+        public static bool operator !=(DeploymentConfiguration? left, DeploymentConfiguration? right)
         {
             return !(left == right);
         }

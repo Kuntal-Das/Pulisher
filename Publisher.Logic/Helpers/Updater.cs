@@ -35,7 +35,7 @@ namespace Publisher.Logic.Helpers
                 if (tempDf is not null)
                     deployedFiles.AddRange(tempDf);
             }
-            catch (Exception ex) { }
+            catch { }
 
             return deployedFiles;
         }

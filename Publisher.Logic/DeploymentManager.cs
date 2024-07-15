@@ -7,12 +7,16 @@ namespace Publisher.Logic
 {
     internal class DeploymentManager : IDeploymentManager
     {
-        internal DeploymentManager() { }
+        internal DeploymentManager()
+        {
+            _p = new Helpers.Publisher();
+            _u = new Updater();
+        }
 
         private Helpers.Publisher _p;
         private Updater _u;
 
-        public Configuration Configuration { get; set; }
+        public DeploymentConfiguration Configuration { get; set; }
 
         public void Deploy(string releaseDirPath, string version = "0.0.0.0", bool needToRollback = false, bool removeOldFile = false, IProgress<string>? progress = null)
         {
@@ -51,7 +55,7 @@ namespace Publisher.Logic
             return version;
         }
 
-        public async Task DeployAsync(string releaseDiirPath, string version = null, bool needToRollback = false, bool removeOldFile = false, IProgress<string> progressReport = null)
+        public async Task DeployAsync(string releaseDiirPath, string version = "0.0.0.0", bool needToRollback = false, bool removeOldFile = false, IProgress<string>? progressReport = null)
         {
             await Task.Run(() => Deploy(releaseDiirPath, version, needToRollback, removeOldFile, progressReport));
         }
@@ -80,12 +84,12 @@ namespace Publisher.Logic
                         return filteredDeployedFiles;
                     }
                 }
-                catch (Exception ex) { }
+                catch { }
             }
             return Enumerable.Empty<IDeployedFile>().ToList();
         }
 
-        public async Task<List<IDeployedFile>> UpdateAsync(List<IDeployedFile> updateFiles, bool canFlush = false, IProgress<string> statusProgress = null, IProgress<int> percentageProgress = null)
+        public async Task<List<IDeployedFile>> UpdateAsync(List<IDeployedFile> updateFiles, bool canFlush = false, IProgress<string>? statusProgress = null, IProgress<int>? percentageProgress = null)
         {
             _u ??= new Updater();
             if (updateFiles.Any(u => u.FlushOld))
@@ -108,11 +112,11 @@ namespace Publisher.Logic
                     {
                         statusProgress?.Report($"Downloading: " + Path.Combine(updateFiles[d].RelativePath, updateFiles[d].FileName));
                         await updateFiles[d].DownloadAsync(Configuration.LocalToolDirFullPath);
-                        percentageProgress.Report((d * 100) / updateFiles.Count);
+                        percentageProgress?.Report((d * 100) / updateFiles.Count);
                     }
                     catch
                     {
-                        await updateFiles[d].DownloadAsync(Path.Combine(Configuration.LocalToolDirFullPath, Configuration.tempDownloadPath));
+                        await updateFiles[d].DownloadAsync(Path.Combine(Configuration.LocalToolDirFullPath, DeploymentConfiguration.tempDownloadPath));
                         unableToUpdateFiles.Add(updateFiles[d]);
                     }
                 }
@@ -136,12 +140,12 @@ namespace Publisher.Logic
                 var dirs = localDirInfo.GetDirectories();
                 foreach (var d in dirs)
                 {
-                    if (d.Name == Configuration.tempDownloadPath) continue;
+                    if (d.Name == DeploymentConfiguration.tempDownloadPath) continue;
                     sb.Append($" $ RMDIR /S /Q {d.Name}");
                 }
             }
-            sb.Append($" & XCOPY \"{Path.Combine(localDirInfo.FullName, Configuration.tempDownloadPath)}\" \"{localDirInfo.FullName}\" /H /I /C /K /E /R /Y");
-            sb.Append($" & RMDIR /S /Q {Configuration.tempDownloadPath}");
+            sb.Append($" & XCOPY \"{Path.Combine(localDirInfo.FullName, DeploymentConfiguration.tempDownloadPath)}\" \"{localDirInfo.FullName}\" /H /I /C /K /E /R /Y");
+            sb.Append($" & RMDIR /S /Q {DeploymentConfiguration.tempDownloadPath}");
             sb.Append($" & {Configuration.MainExeName}");
             sb.Append(" & EXIT");
 

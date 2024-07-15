@@ -4,7 +4,7 @@ namespace Publisher.Logic
 {
     public interface IDeploymentManager
     {
-        public Configuration Configuration { get; internal set; }
+        public DeploymentConfiguration Configuration { get; internal set; }
         void Deploy(string releaseDiirPath, string version = null, bool needToRollback = false, bool removeOldFile = false, IProgress<string> progressReport = null);
         Task DeployAsync(string releaseDiirPath, string version = null, bool needToRollback = false, bool removeOldFile = false, IProgress<string> progressReport = null);
 
