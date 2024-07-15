@@ -4,9 +4,55 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pulisher.UI"
+        xmlns:vm="clr-namespace:Pulisher.UI.ViewModel"
+        xmlns:view="clr-namespace:Pulisher.UI.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Loaded="Window_Loaded">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="15"/>
+        </Grid.RowDefinitions>
+        <TextBlock>Projects</TextBlock>
+        <ListView
+            Grid.Row="2"
+            Grid.RowSpan="2"
+            SelectedValue="{Binding SelectedProject, Mode=TwoWay}"
+            ItemsSource="{Binding Projects}">
+        </ListView>
+        <Button 
+            Grid.Row="4"
+            >Add</Button>
+        <Button 
+           Grid.Row="6"
+           >Refresh</Button>
 
+        <Grid 
+            Grid.Row="0"
+            Grid.Column="2"
+            Grid.RowSpan="7">
+            <Grid.Resources>
+                <DataTemplate DataType="{x:Type vm:ProjectViewModel}">
+                    <view:ProjectView/>
+                </DataTemplate>
+            </Grid.Resources>
+            <ContentControl Content="{Binding SelectedProjectVm}"/>
+        </Grid>
+        
     </Grid>
 </Window>
