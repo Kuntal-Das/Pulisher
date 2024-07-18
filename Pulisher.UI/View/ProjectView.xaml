@@ -10,8 +10,10 @@
              d:Background="AliceBlue">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -22,7 +24,6 @@
             <RowDefinition Height="10"/>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <TextBlock 
             Grid.Row="0"
@@ -37,10 +38,16 @@
             Grid.Column="1"
             Text="{Binding ProjectName}"/>
 
+        <Button 
+            Grid.Row="2"
+            Grid.Column="3"
+            Command="{Binding AddDeployment}"
+            >Add Deployment</Button>
+
         <DataGrid
             Grid.Row="4"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="4"
             SelectedIndex="{Binding SelectedDeploymentIndex, Mode=TwoWay}"
             ItemsSource="{Binding Deployments}"
             ColumnWidth="*"
@@ -61,7 +68,7 @@
         <Grid
             Grid.Row="6"
             Grid.Column="0"
-            Grid.ColumnSpan="2">
+            Grid.ColumnSpan="4">
             <Grid.Resources>
                 <DataTemplate DataType="{x:Type vm:DeploymentViewModel}">
                     <local:DeploymentView/>
@@ -71,23 +78,6 @@
                 </DataTemplate>
             </Grid.Resources>
             <ContentControl Content="{Binding SelectedDeploymentView}"/>
-        </Grid>
-
-        <Grid
-            Grid.Row="8"
-            Grid.Column="0"
-            Grid.ColumnSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0">Add Deployment</Button>
-            <Button Grid.Column="2">Update Deployment</Button>
-            <Button Grid.Column="4">Delete Deployment</Button>
         </Grid>
     </Grid>
 </UserControl>

@@ -62,12 +62,12 @@ namespace Pulisher.UI.ViewModel
 
         private void ExecuteAddDeployment(object? obj)
         {
-
+            Deployments.Add(new DeploymentModel());
         }
 
         private bool CanExecuteAddDeployment(object? arg)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

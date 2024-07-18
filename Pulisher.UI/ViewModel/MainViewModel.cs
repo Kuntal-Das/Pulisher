@@ -101,7 +101,9 @@ namespace Pulisher.UI.ViewModel
 
         private void ExecuteAdd(object obj)
         {
-            Projects.Add(ProjectToAdd.Trim());
+            string item = ProjectToAdd.Trim();
+            Projects.Add(item);
+            SelectedProject = item;
             ProjectToAdd = string.Empty;
         }
     }
