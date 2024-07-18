@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:Pulisher.UI.ViewModel"
         xmlns:view="clr-namespace:Pulisher.UI.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="450" Width="850"
         Loaded="Window_Loaded">
     <Window.DataContext>
         <vm:MainViewModel/>

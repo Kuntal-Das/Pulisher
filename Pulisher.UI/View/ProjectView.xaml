@@ -9,75 +9,85 @@
              d:DesignHeight="450" d:DesignWidth="800"
              d:Background="AliceBlue">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="auto"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="10"/>
-        </Grid.RowDefinitions>
-        <TextBlock 
-            Grid.Row="0"
-            Grid.Column="0"
-            Text="{Binding ProjectName}"/>
-        <Label 
-            Grid.Row="2"
-            Grid.Column="0">
-            Project Name</Label>
-        <TextBox 
-            Grid.Row="2"
-            Grid.Column="1"
-            Text="{Binding ProjectName}"/>
+        <TabControl>
+            <TabItem>
+                <TabItem.Header>Global</TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock 
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Text="{Binding ProjectName}"/>
+                    <Label 
+                        Grid.Row="2"
+                        Grid.Column="0">
+                        Project Name</Label>
+                    <TextBox 
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Text="{Binding ProjectName}"/>
 
-        <Button 
-            Grid.Row="2"
-            Grid.Column="3"
-            Command="{Binding AddDeployment}"
-            >Add Deployment</Button>
+                    <Button 
+                        Grid.Row="2"
+                        Grid.Column="3"
+                        Command="{Binding AddDeployment}"
+                        >Add Deployment</Button>
 
-        <DataGrid
-            Grid.Row="4"
-            Grid.Column="0"
-            Grid.ColumnSpan="4"
-            SelectedIndex="{Binding SelectedDeploymentIndex, Mode=TwoWay}"
-            ItemsSource="{Binding Deployments}"
-            ColumnWidth="*"
-            SelectionUnit="FullRow"
-            AutoGenerateColumns="False"
-            HorizontalScrollBarVisibility="Auto"
-            VerticalScrollBarVisibility="Auto">
-            <DataGrid.Columns>
-                <DataGridTextColumn IsReadOnly="True" Header="Entrypoint" Binding="{Binding MainExeName}"/>
-                <DataGridTextColumn IsReadOnly="True" Header="Version" Binding="{Binding Version}"/>
-                <DataGridTextColumn IsReadOnly="True" Header="Groups Assigned" Binding="{Binding PublishGroupsStr}"/>
-                <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Creation Time" Binding="{Binding CreationTimeStamp, StringFormat=g}"/>
-                <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Last Edited Time" Binding="{Binding LastEditedTimeStamp, StringFormat=g}"/>
-                <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Last Publish Time" Binding="{Binding LastPublishTimeStamp, StringFormat=g}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+                    <DataGrid
+                        Grid.Row="4"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="4"
+                        SelectedIndex="{Binding SelectedDeploymentIndex, Mode=TwoWay}"
+                        ItemsSource="{Binding Deployments}"
+                        ColumnWidth="*"
+                        SelectionUnit="FullRow"
+                        AutoGenerateColumns="False"
+                        HorizontalScrollBarVisibility="Auto"
+                        VerticalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn IsReadOnly="True" Header="Entrypoint" Binding="{Binding EntryPoint}"/>
+                            <DataGridTextColumn IsReadOnly="True" Header="Version" Binding="{Binding Version}"/>
+                            <DataGridTextColumn IsReadOnly="True" Header="Groups Assigned" Binding="{Binding PublishGroupsStr}"/>
+                            <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Creation Time" Binding="{Binding CreationTimeStamp, StringFormat=g}"/>
+                            <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Last Edited Time" Binding="{Binding LastEditedTimeStamp, StringFormat=g}"/>
+                            <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Last Publish Time" Binding="{Binding LastPublishTimeStamp, StringFormat=g}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
 
-        <Grid
-            Grid.Row="6"
-            Grid.Column="0"
-            Grid.ColumnSpan="4">
-            <Grid.Resources>
-                <DataTemplate DataType="{x:Type vm:DeploymentViewModel}">
-                    <local:DeploymentView/>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type vm:EmptyViewModel}">
-                    <local:EmptyView/>
-                </DataTemplate>
-            </Grid.Resources>
-            <ContentControl Content="{Binding SelectedDeploymentView}"/>
-        </Grid>
+                    <ScrollViewer
+                        Grid.Row="6"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="4"
+                        VerticalScrollBarVisibility="Auto">
+                        <Grid
+                            >
+                            <Grid.Resources>
+                                <DataTemplate DataType="{x:Type vm:DeploymentViewModel}">
+                                    <local:DeploymentView/>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type vm:EmptyViewModel}">
+                                    <local:EmptyView/>
+                                </DataTemplate>
+                            </Grid.Resources>
+                            <ContentControl Content="{Binding SelectedDeploymentView}"/>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>
