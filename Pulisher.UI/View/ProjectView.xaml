@@ -41,7 +41,7 @@
             Grid.Row="4"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            SelectedIndex="{Binding SelectedDeploymentIndx, Mode=TwoWay}"
+            SelectedIndex="{Binding SelectedDeploymentIndex, Mode=TwoWay}"
             ItemsSource="{Binding Deployments}"
             ColumnWidth="*"
             SelectionUnit="FullRow"
@@ -49,11 +49,12 @@
             HorizontalScrollBarVisibility="Auto"
             VerticalScrollBarVisibility="Auto">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="Is Active"  Binding="{Binding IsActive}"/>
-                <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Deployment UTC timestamp" Binding="{Binding UtcTimeStamp,StringFormat=R}"/>
-                <DataGridTextColumn Header="Version" Binding="{Binding Version}"/>
-                <DataGridCheckBoxColumn Header="Is Rollback Set" Binding="{Binding IsRollBack}"/>
-                <DataGridCheckBoxColumn Header="Is Flush Old Set" Binding="{Binding IsFlushOld}"/>
+                <DataGridTextColumn IsReadOnly="True" Header="Entrypoint" Binding="{Binding MainExeName}"/>
+                <DataGridTextColumn IsReadOnly="True" Header="Version" Binding="{Binding Version}"/>
+                <DataGridTextColumn IsReadOnly="True" Header="Groups Assigned" Binding="{Binding PublishGroupsStr}"/>
+                <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Creation Time" Binding="{Binding CreationTimeStamp, StringFormat=g}"/>
+                <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Last Edited Time" Binding="{Binding LastEditedTimeStamp, StringFormat=g}"/>
+                <DataGridTextColumn IsReadOnly="True" Width="auto" Header="Last Publish Time" Binding="{Binding LastPublishTimeStamp, StringFormat=g}"/>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -64,6 +65,9 @@
             <Grid.Resources>
                 <DataTemplate DataType="{x:Type vm:DeploymentViewModel}">
                     <local:DeploymentView/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:EmptyViewModel}">
+                    <local:EmptyView/>
                 </DataTemplate>
             </Grid.Resources>
             <ContentControl Content="{Binding SelectedDeploymentView}"/>

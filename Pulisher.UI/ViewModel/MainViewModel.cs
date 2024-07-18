@@ -1,5 +1,4 @@
-﻿using Publisher.Logic;
-using Pulisher.UI.Command;
+﻿using Pulisher.UI.Command;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -21,37 +20,23 @@ namespace Pulisher.UI.ViewModel
             {
                 _selectedProject = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(SelectedDeploymentConfiguration));
+                //RaisePropertyChanged(nameof(SelectedDeploymentConfiguration));
                 RaisePropertyChanged(nameof(SelectedProjectVm));
             }
         }
-        private Dictionary<string, DeploymentConfiguration> _deploymentConfigurationByProjectName;
-        public DeploymentConfiguration SelectedDeploymentConfiguration
-        {
-            get
-            {
-                _deploymentConfigurationByProjectName ??= new Dictionary<string, DeploymentConfiguration>();
-
-                if (!_deploymentConfigurationByProjectName.ContainsKey(SelectedProject))
-                {
-                    _deploymentConfigurationByProjectName[SelectedProject] = new DeploymentConfiguration(SelectedProject, $"{SelectedProject}.exe", new Dictionary<string, string>());
-                }
-                return _deploymentConfigurationByProjectName[SelectedProject];
-            }
-        }
         private Dictionary<string, ProjectViewModel> _projectVmByProjectName;
-        public ProjectViewModel SelectedProjectVm
+        public ViewModelBase SelectedProjectVm
         {
             get
             {
                 _projectVmByProjectName ??= new Dictionary<string, ProjectViewModel>();
                 if (string.IsNullOrEmpty(SelectedProject))
                 {
-                    return new ProjectViewModel(new DeploymentConfiguration("Loading", "Loading", new Dictionary<string, string>()));
+                    return new EmptyViewModel("Select or Add Project to view Deployments");
                 }
                 if (!_projectVmByProjectName.ContainsKey(SelectedProject))
                 {
-                    _projectVmByProjectName[SelectedProject] = new ProjectViewModel(SelectedDeploymentConfiguration);
+                    _projectVmByProjectName[SelectedProject] = new ProjectViewModel(SelectedProject);
                 }
 
                 return _projectVmByProjectName[SelectedProject];

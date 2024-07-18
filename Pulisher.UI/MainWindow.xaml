@@ -51,7 +51,6 @@
         <Button 
             Grid.Row="8"
             Command="{Binding AddCommand}"
-            CommandParameter="{ Binding ElementName=tb_add_project, Path=Text}"
             >Add</Button>
 
 
@@ -62,6 +61,9 @@
             <Grid.Resources>
                 <DataTemplate DataType="{x:Type vm:ProjectViewModel}">
                     <view:ProjectView/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type vm:EmptyViewModel}">
+                    <view:EmptyView/>
                 </DataTemplate>
             </Grid.Resources>
             <ContentControl Content="{Binding SelectedProjectVm}"/>

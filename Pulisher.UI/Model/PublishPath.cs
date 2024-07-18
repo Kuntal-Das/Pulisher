@@ -1,8 +1,8 @@
 ﻿namespace Pulisher.UI.Model
 {
-    internal class PublishPathWithSite
+    internal class PublishPath
     {
-        public string Site { get; set; }
+        public string GroupName { get; set; }
         public string PublishFullPath { get; set; }
     }
 }

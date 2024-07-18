@@ -1,5 +1,5 @@
-﻿using Publisher.Logic;
-using Pulisher.UI.Command;
+﻿using Pulisher.UI.Command;
+using Pulisher.UI.Model;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -7,17 +7,13 @@ namespace Pulisher.UI.ViewModel
 {
     internal class ProjectViewModel : ViewModelBase
     {
-        public ProjectViewModel(DeploymentConfiguration selectedDeploymentConfiguration)
+        public ProjectViewModel(string projectName)
         {
-            _deploymentConfiguration = selectedDeploymentConfiguration;
-            ProjectName = _deploymentConfiguration.ProjectName;
-            Deployments = new ObservableCollection<DeploymentViewModel>();
-            SelectedDeploymentIndx = 0;
+            ProjectName = projectName;
+            Deployments = new ObservableCollection<DeploymentModel>();
         }
 
-        private DeploymentConfiguration _deploymentConfiguration;
         private string _projName;
-
         public string ProjectName
         {
             get => _projName;
@@ -27,26 +23,26 @@ namespace Pulisher.UI.ViewModel
                 RaisePropertyChanged();
             }
         }
-        public ObservableCollection<DeploymentViewModel> Deployments { get; set; }
-        private int _selectedDeploymentIndx;
 
-        public int SelectedDeploymentIndx
+        public ObservableCollection<DeploymentModel> Deployments { get; set; }
+
+        private int _selectedDeploymentIndex;
+        public int SelectedDeploymentIndex
         {
-            get { return _selectedDeploymentIndx; }
+            get { return _selectedDeploymentIndex; }
             set
             {
-                _selectedDeploymentIndx = value;
+                _selectedDeploymentIndex = value;
                 RaisePropertyChanged(nameof(SelectedDeploymentView));
             }
         }
-
-        public DeploymentViewModel SelectedDeploymentView
+        public ViewModelBase SelectedDeploymentView
         {
             get
             {
-                if (SelectedDeploymentIndx <= Deployments.Count)
-                    return new DeploymentViewModel(new DeploymentConfiguration(ProjectName, ProjectName, new Dictionary<string, string>()));
-                return Deployments[SelectedDeploymentIndx];
+                if (SelectedDeploymentIndex < 0 || SelectedDeploymentIndex >= Deployments.Count)
+                    return new EmptyViewModel("Select or Add Deployment to view/edit configuration and Publish/Rollback");
+                return new DeploymentViewModel(Deployments[SelectedDeploymentIndex]);
             }
         }
 

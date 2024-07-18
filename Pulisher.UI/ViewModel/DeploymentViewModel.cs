@@ -1,19 +1,15 @@
-﻿using Publisher.Logic;
-using Pulisher.UI.Model;
+﻿using Pulisher.UI.Model;
 using System.Collections.ObjectModel;
 
 namespace Pulisher.UI.ViewModel
 {
     internal class DeploymentViewModel : ViewModelBase
     {
-        public DeploymentViewModel(DeploymentConfiguration deploymentConfiguration)
+        public DeploymentViewModel(DeploymentModel? selectedDeployment = null)
         {
-            _deploymentConfiguration = deploymentConfiguration;
-            MainExeName = deploymentConfiguration.MainExeName;
-            PublishPathWithSites = new ObservableCollection<PublishPathWithSite>();
+            MainExeName = selectedDeployment?.MainExeName;
+            PublishPathWithSites = new ObservableCollection<PublishPath>();
         }
-
-        private DeploymentConfiguration _deploymentConfiguration;
 
         private string _mainExeName;
         public string MainExeName
@@ -21,6 +17,8 @@ namespace Pulisher.UI.ViewModel
             get => _mainExeName;
             set
             {
+                if (value is null)
+                    value = "main.exe";
                 if (!value.EndsWith(".exe"))
                     _mainExeName = value + ".exe";
                 else
@@ -88,7 +86,7 @@ namespace Pulisher.UI.ViewModel
                 RaisePropertyChanged();
             }
         }
-        public ObservableCollection<PublishPathWithSite> PublishPathWithSites { get; set; }
+        public ObservableCollection<PublishPath> PublishPathWithSites { get; set; }
 
     }
 }
