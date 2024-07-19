@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Pulisher.UI.View" 
+             xmlns:mycontrols="clr-namespace:MyControlLibrary;assembly=MyControlLibrary" 
              mc:Ignorable="d" 
              xmlns:viewmodel="clr-namespace:Pulisher.UI.ViewModel" 
              d:DataContext="{d:DesignInstance Type=viewmodel:DeploymentViewModel}"
@@ -38,7 +39,13 @@
             Grid.Row="0"
             Grid.Column="0"
             >Upload From</Label>
-        <Grid
+        <mycontrols:PathSelector
+            Grid.Row="0"
+            Grid.Column="2"
+            Grid.ColumnSpan="5"
+            Path="{Binding ReleasePath,UpdateSourceTrigger=PropertyChanged}"
+            IsFolderPicker="True"/>
+        <!--<Grid
             Grid.Row="0"
             Grid.Column="2"
             Grid.ColumnSpan="5">
@@ -55,7 +62,7 @@
                 Margin="10,0,0,0"
                 Command="{Binding BrowseCommand}"
                 >Browse</Button>
-        </Grid>
+        </Grid>-->
 
         <Label
             Grid.Row="2"
@@ -114,21 +121,11 @@
             Grid.Row="6"
             Grid.Column="0"
             >Publish Fullpath</Label>
-        <Grid
+        <mycontrols:PathSelector 
             Grid.Row="6"
-            Grid.Column="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="10"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBox 
-                Grid.Column="0"
-                Text="{Binding GroupName, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button
-                Grid.Column="4"
-                >Browse</Button>
-        </Grid>
+            Grid.Column="2"
+            Path="{Binding PublishFullPathInput,UpdateSourceTrigger=PropertyChanged}"
+            IsFolderPicker="True"/>
         <Label
             Grid.Row="6"
             Grid.Column="4"

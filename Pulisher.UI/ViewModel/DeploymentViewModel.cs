@@ -1,7 +1,5 @@
-﻿using Pulisher.UI.Command;
-using Pulisher.UI.Model;
+﻿using Pulisher.UI.Model;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace Pulisher.UI.ViewModel
 {
@@ -135,36 +133,25 @@ namespace Pulisher.UI.ViewModel
         }
 
 
-        private ICommand _browseCommand;
-        public ICommand BrowseCommand
+        private string _groupNameInput;
+        public string GroupNameInput
         {
-            get
+            get => _groupNameInput;
+            set
             {
-                if (_browseCommand is null)
-                {
-                    _browseCommand = new RelayCommand(ExecuteBrowseCommand, CanExecuteBrowseCommand);
-                }
-                return _browseCommand;
+                _groupNameInput = value;
+                RaisePropertyChanged();
             }
         }
 
-        private bool CanExecuteBrowseCommand(object? arg)
-        {
-            return true;
-        }
+        private string _publishFullPathInput;
 
-        private void ExecuteBrowseCommand(object? obj)
+        public string PublishFullPathInput
         {
-        }
-
-        private string _groupName;
-
-        public string GroupName
-        {
-            get => _groupName;
+            get { return _publishFullPathInput; }
             set
             {
-                _groupName = value;
+                _publishFullPathInput = value;
                 RaisePropertyChanged();
             }
         }
