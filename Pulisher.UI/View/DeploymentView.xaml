@@ -54,7 +54,7 @@
             Grid.Row="2"
             Grid.Column="2"
             FileName="{Binding EntryPoint, Mode=TwoWay}"
-            Directory="{Binding ReleasePath, Mode=OneWayToSource}"
+            Directory="{Binding ReleasePath, Mode=TwoWay}"
             IsFolderPicker="False"
             FileFilters="Executable Files,*.exe;All Files, *.*"/>
         <Label
@@ -75,7 +75,7 @@
             <ComboBox 
                 Grid.Column="2"
                 ItemsSource="{Binding Channels}"
-                SelectedValue="{Binding SelectedChannel}"/>
+                SelectedValue="{Binding Channel}"/>
         </Grid>
 
         <DataGrid 

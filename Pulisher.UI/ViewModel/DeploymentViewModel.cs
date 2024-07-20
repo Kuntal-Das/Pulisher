@@ -5,11 +5,30 @@ namespace Pulisher.UI.ViewModel
 {
     internal class DeploymentViewModel : ViewModelBase
     {
-        private DeploymentModel? _deploymentModel;
-        public DeploymentViewModel(DeploymentModel? deploymentModel = null)
+        private DeploymentModel _deploymentModel;
+        public DeploymentViewModel(DeploymentModel deploymentModel)
         {
             _deploymentModel = deploymentModel;
-            PublishPathWithGroups = new ObservableCollection<PublishPath>();
+            Channels = new ObservableCollection<string> { "alpha", "beta", "stable" };
+            ProjectName = _deploymentModel?.ProjectName ?? string.Empty;
+            ReleasePath = _deploymentModel?.ReleasePath ?? string.Empty;
+            EntryPoint = _deploymentModel?.EntryPoint ?? string.Empty;
+            Version = _deploymentModel?.Version ?? string.Empty;
+            Channel = _deploymentModel?.Channel ?? string.Empty;
+
+            if (_deploymentModel?.PublishPathsWithGroups is null)
+                PublishPathWithGroups = new ObservableCollection<PublishPath>();
+            else
+                PublishPathWithGroups = new ObservableCollection<PublishPath>(_deploymentModel.PublishPathsWithGroups);
+            if (_deploymentModel?.PublishGroups is null)
+                PublishGroups = new ObservableCollection<string>();
+            else
+                PublishGroups = new ObservableCollection<string>(_deploymentModel.PublishGroups);
+            IsRollbackSet = _deploymentModel?.IsRollbackSet ?? false;
+            IsFlushOldSet = _deploymentModel?.IsFlushOldSet ?? false;
+            CreationTimeStamp = _deploymentModel?.CreationTimeStamp ?? DateTime.UtcNow;
+            LastEditedTimeStamp = _deploymentModel?.LastEditedTimeStamp ?? DateTime.UtcNow;
+            LastPublishTimeStamp = _deploymentModel?.LastPublishTimeStamp?.ToString("R") ?? "N/A";
         }
 
         private string _releasePath;
@@ -19,6 +38,7 @@ namespace Pulisher.UI.ViewModel
             set
             {
                 _releasePath = value;
+                _deploymentModel.ReleasePath = _releasePath;
                 RaisePropertyChanged();
             }
         }
@@ -30,6 +50,7 @@ namespace Pulisher.UI.ViewModel
             set
             {
                 _projectName = value;
+                _deploymentModel.ProjectName = _projectName;
                 RaisePropertyChanged();
             }
         }
@@ -46,6 +67,7 @@ namespace Pulisher.UI.ViewModel
                     _entryPoint = value + ".exe";
                 else
                     _entryPoint = value;
+                _deploymentModel.EntryPoint = _entryPoint;
                 RaisePropertyChanged();
             }
         }
@@ -57,19 +79,21 @@ namespace Pulisher.UI.ViewModel
             set
             {
                 _version = value;
+                _deploymentModel.Version = _version;
                 RaisePropertyChanged();
             }
         }
 
         public ObservableCollection<string> Channels { get; set; }
 
-        private string _selectedChannel;
-        public string SelectedChannel
+        private string _channel;
+        public string Channel
         {
-            get { return _selectedChannel; }
+            get { return _channel; }
             set
             {
-                _selectedChannel = value;
+                _channel = value;
+                _deploymentModel.Channel = _channel;
                 RaisePropertyChanged();
             }
         }
@@ -84,6 +108,7 @@ namespace Pulisher.UI.ViewModel
             set
             {
                 _isRollBackSet = value;
+                _deploymentModel.IsRollbackSet = _isRollBackSet;
                 RaisePropertyChanged();
             }
         }
@@ -95,6 +120,7 @@ namespace Pulisher.UI.ViewModel
             set
             {
                 _isFlushOldSet = value;
+                _deploymentModel.IsFlushOldSet = _isFlushOldSet;
                 RaisePropertyChanged();
             }
         }
@@ -106,6 +132,7 @@ namespace Pulisher.UI.ViewModel
             set
             {
                 _creationTimeStamp = value;
+                _deploymentModel.CreationTimeStamp = _creationTimeStamp;
                 RaisePropertyChanged();
             }
         }
@@ -117,17 +144,22 @@ namespace Pulisher.UI.ViewModel
             set
             {
                 _lastEditedTimeStamp = value;
+                _deploymentModel.LastEditedTimeStamp = _lastEditedTimeStamp;
                 RaisePropertyChanged();
             }
         }
 
-        private DateTime _lastPublishTimeStamp;
-        public DateTime LastPublishTimeStamp
+        private string _lastPublishTimeStamp;
+        public string LastPublishTimeStamp
         {
             get => _lastPublishTimeStamp;
             set
             {
                 _lastPublishTimeStamp = value;
+                if (DateTime.TryParse(value, out var lpt))
+                {
+                    _deploymentModel.LastPublishTimeStamp = lpt;
+                }
                 RaisePropertyChanged();
             }
         }

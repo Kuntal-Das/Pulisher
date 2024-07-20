@@ -11,5 +11,12 @@ namespace Pulisher.UI.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         }
+        protected void RaisePropertyChanged(params string[] propNames)
+        {
+            foreach (var prop in propNames)
+            {
+                RaisePropertyChanged(prop);
+            }
+        }
     }
 }
