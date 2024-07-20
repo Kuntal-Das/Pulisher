@@ -43,7 +43,7 @@
             Grid.Row="0"
             Grid.Column="2"
             Grid.ColumnSpan="5"
-            Path="{Binding ReleasePath,UpdateSourceTrigger=PropertyChanged}"
+            Path="{Binding ReleasePath}"
             IsFolderPicker="True"/>
         <!--<Grid
             Grid.Row="0"
@@ -68,11 +68,12 @@
             Grid.Row="2"
             Grid.Column="0"
             >Entry Point</Label>
-        <TextBox
+        <mycontrols:PathSelector 
             Grid.Row="2"
             Grid.Column="2"
-            Text="{Binding EntryPoint, UpdateSourceTrigger=PropertyChanged}"/>
-
+            FileName="{Binding EntryPoint}"
+            IsFolderPicker="False"
+            FileFilters="Executable Files,*.exe;All Files, *.*"/>
         <Label
              Grid.Row="2"
              Grid.Column="4"
@@ -140,7 +141,7 @@
             </Grid.ColumnDefinitions>
             <TextBox 
                 Grid.Column="0"
-                Text="{Binding GroupName, UpdateSourceTrigger=PropertyChanged}"/>
+                Text="{Binding GroupNameInput, UpdateSourceTrigger=PropertyChanged}"/>
             <Button
                 Grid.Column="2"
                 >Add Group</Button>
