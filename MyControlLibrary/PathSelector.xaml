@@ -16,7 +16,8 @@
         <TextBox 
             Grid.Column="0"
             MinWidth="200"
-            x:Name="tb_path"/>
+            x:Name="tb_path"
+            TextChanged="tb_path_TextChanged"/>
         <Button
             Grid.Column="4" Click="Button_Click"
             >Browse</Button>

@@ -16,27 +16,17 @@ namespace MyControlLibrary
             InitializeComponent();
         }
 
-
-        public string FileName
+        public string Directory
         {
-            get { return (string)GetValue(FileNameProperty); }
-            set { SetValue(FileNameProperty, value); }
+            get { return (string)GetValue(DirectoryProperty); }
+            set { SetValue(DirectoryProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for FileName.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty FileNameProperty =
-            DependencyProperty.Register("FileName", typeof(string), typeof(PathSelector), new PropertyMetadata(string.Empty, FileNamePropertyChanged));
+        // Using a DependencyProperty as the backing store for Directory.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DirectoryProperty =
+            DependencyProperty.Register("Directory", typeof(string), typeof(PathSelector), new PropertyMetadata(string.Empty));
 
-        private static void FileNamePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is not null && d is PathSelector ps && e.NewValue is string newFileName && ps.tb_path.Text != newFileName)
-            {
-                if (!ps.IsFolderPicker)
-                {
-                    ps.tb_path.Text = newFileName;
-                }
-            }
-        }
+
 
         public string FileFiterSeperator
         {
@@ -81,18 +71,41 @@ namespace MyControlLibrary
         public static readonly DependencyProperty IsFolderPickerProperty =
             DependencyProperty.Register("IsFolderPicker", typeof(bool), typeof(PathSelector), new PropertyMetadata(false));
 
-        public string Path
+
+        public string FileName
         {
-            get { return (string)GetValue(PathProperty); }
-            set { SetValue(PathProperty, value); }
+            get { return (string)GetValue(FileNameProperty); }
+            set { SetValue(FileNameProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Path.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PathProperty =
-            DependencyProperty.Register("Path", typeof(string), typeof(PathSelector),
-                new PropertyMetadata(string.Empty, PathPropertyChanged));
+        // Using a DependencyProperty as the backing store for FileName.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty FileNameProperty =
+            DependencyProperty.Register("FileName", typeof(string), typeof(PathSelector), new PropertyMetadata(string.Empty, FileNamePropertyChanged));
 
-        private static void PathPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void FileNamePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is not null && d is PathSelector ps && e.NewValue is string newFileName && ps.tb_path.Text != newFileName)
+            {
+                if (!ps.IsFolderPicker)
+                {
+                    ps.tb_path.Text = newFileName;
+                }
+            }
+        }
+
+
+        public string FullPath
+        {
+            get { return (string)GetValue(FullPathProperty); }
+            set { SetValue(FullPathProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for FullPath.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty FullPathProperty =
+            DependencyProperty.Register("FullPath", typeof(string), typeof(PathSelector),
+                new PropertyMetadata(string.Empty, FullPathPropertyChanged));
+
+        private static void FullPathPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is not null && d is PathSelector ps && e.NewValue is string newPath && ps.tb_path.Text != newPath)
             {
@@ -107,7 +120,6 @@ namespace MyControlLibrary
         {
             CommonOpenFileDialog dialog = new()
             {
-                //InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Recent),
                 IsFolderPicker = IsFolderPicker,
                 Multiselect = false,
             };
@@ -139,11 +151,30 @@ namespace MyControlLibrary
             }
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
+                FullPath = dialog.FileName;
                 if (!IsFolderPicker)
                 {
-                    FileName = new FileInfo(dialog.FileName).Name;
+                    FileInfo fileInfo = new FileInfo(dialog.FileName);
+                    FileName = fileInfo.Name;
+                    Directory = fileInfo.DirectoryName;
                 }
-                Path = dialog.FileName;
+                else
+                {
+                    Directory = dialog.FileName;
+                }
+            }
+        }
+
+        private void tb_path_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var text = (sender as TextBox).Text;
+            if (IsFolderPicker)
+            {
+                FullPath = text;
+            }
+            else
+            {
+                FileName = text;
             }
         }
     }

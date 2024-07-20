@@ -2,6 +2,10 @@
 {
     class DeploymentModel
     {
+        public DeploymentModel()
+        {
+            ID = Guid.NewGuid().ToString();
+        }
         public string ID { get; set; }
         public string ReleasePath { get; set; }
         public string ProjectName { get; set; }

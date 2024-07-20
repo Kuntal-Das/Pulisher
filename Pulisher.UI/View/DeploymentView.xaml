@@ -43,26 +43,8 @@
             Grid.Row="0"
             Grid.Column="2"
             Grid.ColumnSpan="5"
-            Path="{Binding ReleasePath}"
+            FullPath="{Binding ReleasePath, Mode=TwoWay}"
             IsFolderPicker="True"/>
-        <!--<Grid
-            Grid.Row="0"
-            Grid.Column="2"
-            Grid.ColumnSpan="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBox
-                Grid.Column="0"
-                DockPanel.Dock="Left"
-                Text="{Binding ReleasePath, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button
-                Grid.Column="1"
-                Margin="10,0,0,0"
-                Command="{Binding BrowseCommand}"
-                >Browse</Button>
-        </Grid>-->
 
         <Label
             Grid.Row="2"
@@ -71,7 +53,8 @@
         <mycontrols:PathSelector 
             Grid.Row="2"
             Grid.Column="2"
-            FileName="{Binding EntryPoint}"
+            FileName="{Binding EntryPoint, Mode=TwoWay}"
+            Directory="{Binding ReleasePath, Mode=OneWayToSource}"
             IsFolderPicker="False"
             FileFilters="Executable Files,*.exe;All Files, *.*"/>
         <Label
@@ -125,7 +108,7 @@
         <mycontrols:PathSelector 
             Grid.Row="6"
             Grid.Column="2"
-            Path="{Binding PublishFullPathInput,UpdateSourceTrigger=PropertyChanged}"
+            FullPath="{Binding PublishFullPathInput,UpdateSourceTrigger=PropertyChanged}"
             IsFolderPicker="True"/>
         <Label
             Grid.Row="6"

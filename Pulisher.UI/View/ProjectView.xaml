@@ -73,8 +73,7 @@
                         Grid.Column="0"
                         Grid.ColumnSpan="4"
                         VerticalScrollBarVisibility="Auto">
-                        <Grid
-                            >
+                        <Grid>
                             <Grid.Resources>
                                 <DataTemplate DataType="{x:Type vm:DeploymentViewModel}">
                                     <local:DeploymentView/>
