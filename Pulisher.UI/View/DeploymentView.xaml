@@ -79,25 +79,29 @@
         </Grid>
 
         <DataGrid 
+            x:Name="dg_groups"
             Grid.Row="4"
             Grid.Column="0"
             Grid.ColumnSpan="7"
             ItemsSource="{Binding PublishPathWithGroups}"
             AutoGenerateColumns="False"
             CanUserAddRows="False"
-            CanUserDeleteRows="True">
+            CanUserDeleteRows="True"
+            >
             <DataGrid.Columns>
                 <DataGridTextColumn Width="*" Header="Publish Fullpath"  Binding="{Binding PublishFullPath}"/>
                 <DataGridTextColumn Width="auto" Header="Group Name" Binding="{Binding GroupName}"/>
                 <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.Header>
-                        <CheckBox />
-                    </DataGridTemplateColumn.Header>
-                    <DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.HeaderTemplate>
                         <DataTemplate>
-                            <CheckBox />
+                            <CheckBox IsChecked="{Binding ElementName=dg_groups, Path=DataContext.SelectAllGroups,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
@@ -108,7 +112,7 @@
         <mycontrols:PathSelector 
             Grid.Row="6"
             Grid.Column="2"
-            FullPath="{Binding PublishFullPathInput,UpdateSourceTrigger=PropertyChanged}"
+            FullPath="{Binding GroupAddPublishFullPathInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             IsFolderPicker="True"/>
         <Label
             Grid.Row="6"
@@ -124,9 +128,10 @@
             </Grid.ColumnDefinitions>
             <TextBox 
                 Grid.Column="0"
-                Text="{Binding GroupNameInput, UpdateSourceTrigger=PropertyChanged}"/>
+                Text="{Binding GroupAddNameInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Button
                 Grid.Column="2"
+                Command="{Binding AddGroupCommand}"
                 >Add Group</Button>
         </Grid>
         <Label

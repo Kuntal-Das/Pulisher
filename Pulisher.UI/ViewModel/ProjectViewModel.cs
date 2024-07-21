@@ -10,28 +10,8 @@ namespace Pulisher.UI.ViewModel
         {
             ProjectName = projectName;
             Deployments = new ObservableCollection<DeploymentViewModel>();
-            //Deployments.CollectionChanged += Deployments_CollectionChanged;
         }
 
-        //private void Deployments_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        //{
-        //    if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove
-        //        && _deploymentVms is not null)
-        //    {
-        //        if (e.NewItems is null)
-        //        {
-        //            _deploymentVms.Clear();
-        //            return;
-        //        }
-        //        foreach (var id in _deploymentVms.Keys)
-        //        {
-        //            if (!e.NewItems.Contains(id))
-        //            {
-        //                _deploymentVms.Remove(id);
-        //            }
-        //        }
-        //    }
-        //}
         private string _projName;
         public string ProjectName
         {
@@ -57,7 +37,6 @@ namespace Pulisher.UI.ViewModel
             }
         }
 
-        //private Dictionary<string, DeploymentViewModel> _deploymentVms;
         public ViewModelBase SelectedDeploymentView
         {
             get
@@ -65,15 +44,6 @@ namespace Pulisher.UI.ViewModel
                 if (SelectedDeploymentIndex < 0 || SelectedDeploymentIndex >= Deployments.Count)
                     return new EmptyViewModel("Select or Add Deployment to view/edit configuration and Publish/Rollback");
                 return Deployments[SelectedDeploymentIndex];
-                //if (_deploymentVms is null)
-                //{
-                //    _deploymentVms = new Dictionary<string, DeploymentViewModel>();
-                //}
-                //if (!_deploymentVms.ContainsKey(Deployments[SelectedDeploymentIndex].ID))
-                //{
-                //    _deploymentVms[Deployments[SelectedDeploymentIndex].ID] = new DeploymentViewModel(Deployments[SelectedDeploymentIndex]);
-                //}
-                //return _deploymentVms[Deployments[SelectedDeploymentIndex].ID];
             }
         }
 
@@ -93,7 +63,7 @@ namespace Pulisher.UI.ViewModel
 
         private void ExecuteAddDeployment(object? obj)
         {
-            var deploymentTobeAdded = new DeploymentViewModel(new() { ProjectName = ProjectName });
+            var deploymentTobeAdded = new DeploymentViewModel() { ProjectName = ProjectName };
             Deployments.Add(deploymentTobeAdded);
             SelectedDeploymentIndex = Deployments.Count - 1;
         }

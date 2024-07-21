@@ -1,16 +1,18 @@
-﻿using Pulisher.UI.Model;
+﻿using Pulisher.UI.Command;
+using Pulisher.UI.Model;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Input;
 
 namespace Pulisher.UI.ViewModel
 {
     internal class DeploymentViewModel : ViewModelBase
     {
         private DeploymentModel _deploymentModel;
-        public DeploymentViewModel(DeploymentModel deploymentModel)
+        public DeploymentViewModel(DeploymentModel? deploymentModel = null)
         {
-            _deploymentModel = deploymentModel;
+            _deploymentModel = deploymentModel ?? new();
             Channels = new ObservableCollection<string> { "alpha", "beta", "stable" };
             ProjectName = _deploymentModel?.ProjectName ?? string.Empty;
             ReleasePath = _deploymentModel?.ReleasePath ?? string.Empty;
@@ -101,8 +103,25 @@ namespace Pulisher.UI.ViewModel
             }
         }
 
+        private bool _selectAllGroups;
+        public bool SelectAllGroups
+        {
+            get => _selectAllGroups;
+            set
+            {
+                _selectAllGroups = value;
+                RaisePropertyChanged();
+                if (PublishPathWithGroups is null) return;
+                foreach (var group in PublishPathWithGroups)
+                {
+                    group.IsChecked = _selectAllGroups;
+                }
+            }
+        }
+
         public ObservableCollection<PublishPath> PublishPathWithGroups { get; set; }
         public ObservableCollection<string> PublishGroups { get; set; }
+        public string PublishGroupsStr => string.Join(",", PublishGroups);
 
         private bool _isRollBackSet;
         public bool IsRollbackSet
@@ -168,25 +187,25 @@ namespace Pulisher.UI.ViewModel
         }
 
 
-        private string _groupNameInput;
-        public string GroupNameInput
+        private string _grpAddNameInput;
+        public string GroupAddNameInput
         {
-            get => _groupNameInput;
+            get => _grpAddNameInput;
             set
             {
-                _groupNameInput = value;
+                _grpAddNameInput = value;
                 RaisePropertyChanged();
             }
         }
 
-        private string _publishFullPathInput;
+        private string _grpAddPublishFullPathInput;
 
-        public string PublishFullPathInput
+        public string GroupAddPublishFullPathInput
         {
-            get { return _publishFullPathInput; }
+            get { return _grpAddPublishFullPathInput; }
             set
             {
-                _publishFullPathInput = value;
+                _grpAddPublishFullPathInput = value;
                 RaisePropertyChanged();
             }
         }
@@ -197,6 +216,46 @@ namespace Pulisher.UI.ViewModel
             var fileVerInfo = FileVersionInfo.GetVersionInfo(exePath);
             Version = fileVerInfo.FileVersion ?? "1.0.0.0";
             Channel = Channels.FirstOrDefault() ?? "beta";
+        }
+
+        private ICommand _addGroupCommand;
+        public ICommand AddGroupCommand
+        {
+            get
+            {
+                if (_addGroupCommand is null)
+                {
+                    _addGroupCommand = new RelayCommand(ExecuteAddGroupCommand, CanExecuteAddGroupCommand);
+                }
+                return _addGroupCommand;
+            }
+        }
+
+        private bool CanExecuteAddGroupCommand(object? arg)
+        {
+            var groupName = GroupAddNameInput?.Trim();
+            var publishFullPath = GroupAddPublishFullPathInput?.Trim();
+
+            if (!Directory.Exists(GroupAddPublishFullPathInput)) return false;
+            if (string.IsNullOrEmpty(groupName) || groupName.Length <= 3) return false;
+            if (PublishGroups.Contains(groupName)) return false;
+            if (PublishPathWithGroups.Any(x => x.PublishFullPath == publishFullPath)) return false;
+            return true;
+        }
+
+        private void ExecuteAddGroupCommand(object? obj)
+        {
+            PublishPath item = new PublishPath()
+            {
+                GroupName = GroupAddNameInput.Trim(),
+                PublishFullPath = GroupAddPublishFullPathInput.Trim(),
+                IsChecked = SelectAllGroups,
+            };
+            PublishGroups.Add(item.GroupName);
+            PublishPathWithGroups.Add(item);
+
+            GroupAddNameInput = string.Empty;
+            GroupAddPublishFullPathInput = string.Empty;
         }
     }
 }
