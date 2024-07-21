@@ -1,5 +1,7 @@
 ﻿using Pulisher.UI.Model;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 
 namespace Pulisher.UI.ViewModel
 {
@@ -69,6 +71,7 @@ namespace Pulisher.UI.ViewModel
                     _entryPoint = value;
                 _deploymentModel.EntryPoint = _entryPoint;
                 RaisePropertyChanged();
+                UpdateVersion(Path.Combine(ReleasePath, _entryPoint));
             }
         }
 
@@ -188,5 +191,12 @@ namespace Pulisher.UI.ViewModel
             }
         }
 
+        private void UpdateVersion(string exePath)
+        {
+            if (!File.Exists(exePath)) return;
+            var fileVerInfo = FileVersionInfo.GetVersionInfo(exePath);
+            Version = fileVerInfo.FileVersion ?? "1.0.0.0";
+            Channel = Channels.FirstOrDefault() ?? "beta";
+        }
     }
 }
